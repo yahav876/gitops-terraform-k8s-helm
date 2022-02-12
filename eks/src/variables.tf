@@ -13,7 +13,7 @@ variable "general_config" {
 }
 
 
-variable "sec_group_jenkins" {
+variable "sec_group_eks" {
   type = any
   default = {
     ingress_cidr_blocks = ""
