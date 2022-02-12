@@ -25,28 +25,21 @@ module "sec-group-eks" {
   depends_on = [
     module.vpc
   ]
-
-
-  name        = var.sec_group_jenkins.name
-  description = "Security group for user-service with custom ports open within VPC, and PostgreSQL publicly open"
-  vpc_id      = module.vpc.vpc_id
-
-  ingress_cidr_blocks = var.sec_group_jenkins.ingress_cidr_blocks
-  ingress_rules       = var.sec_group_jenkins.ingress_rules
-  egress_rules        = var.sec_group_jenkins.egress_rules
+  name                = var.sec_group_eks.name
+  vpc_id              = module.vpc.vpc_id
+  ingress_cidr_blocks = var.sec_group_eks.ingress_cidr_blocks
+  ingress_rules       = var.sec_group_eks.ingress_rules
+  egress_rules        = var.sec_group_eks.egress_rules
 
 }
 
 
 module "eks" {
   source = "terraform-aws-modules/eks/aws"
-    depends_on = [
-    module.vpc
-  ]
 
   cluster_name                    = "my-cluster"
   cluster_version                 = "1.21"
-  cluster_endpoint_private_access = true
+  cluster_endpoint_private_access = false
   cluster_endpoint_public_access  = true
 
   cluster_addons = {
@@ -59,14 +52,8 @@ module "eks" {
     }
   }
 
-  cluster_encryption_config = [{
-    provider_key_arn = "ac01234b-00d9-40f6-ac95-e42345f78b00"
-    resources        = ["secrets"]
-  }]
-
   vpc_id     = module.vpc.vpc_id
-  subnet_ids = [module.vpc.private_subnets[0], module.vpc.private_subnets[1]]
-
+  subnet_ids = [module.vpc.public_subnets[0], module.vpc.public_subnets[1]]
 
   # EKS Managed Node Group(s)
   eks_managed_node_group_defaults = {
@@ -89,13 +76,18 @@ module "eks" {
         GithubRepo  = "terraform-aws-eks"
         GithubOrg   = "terraform-aws-modules"
       }
-      # taints = {
-      #   dedicated = {
-      #     key    = "dedicated"
-      #     value  = "gpuGroup"
-      #     effect = "NO_SCHEDULE"
-      #   }
-      # }
+
+      create_iam_role          = true
+      iam_role_name            = "eks-managed-node-group-complete-example"
+      iam_role_use_name_prefix = false
+      iam_role_description     = "EKS managed node group complete example role"
+      iam_role_tags = {
+        Purpose = "Protector of the kubelet"
+      }
+      iam_role_additional_policies = [
+        "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      ]
+
       tags = {
         ExtraTag = "example"
       }
