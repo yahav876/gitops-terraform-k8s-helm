@@ -93,6 +93,13 @@ This is an example of how to list things you need to use the software and how to
     KUBE_CONFIG_DATA (cat $HOME/.kube/config | base64)
     TF_API_TOKEN
    ```
+4. Test  UI of Grafana
+    ```sh
+    kubectl port-forward deployment/monitoring-grafana 3000
+
+    user: admin
+    password: prom-operator
+    ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
