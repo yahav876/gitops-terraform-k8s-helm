@@ -61,5 +61,5 @@ jobs:
        uses: koslib/helm-eks-action@master
        env:
         KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
-        with:
+       with:
           command: helm upgrade monitoring --install --wait helm/kube-prometheus-stack -f helm/kube-prometheus-stack/values.yaml
