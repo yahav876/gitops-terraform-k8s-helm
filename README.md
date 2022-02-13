@@ -29,7 +29,7 @@
 
 
 The product owners are all about the new buzz word: GitOps!
-For this assignment, you will need to create a new Kubernetes cluster
+For this project, I will create a new Kubernetes cluster
 on AWS, deploy a monitoring tool using Helm chart and go everything
 the GitOps way.
 
@@ -78,21 +78,32 @@ This is an example of how to list things you need to use the software and how to
 
 ### Installation
 
-1. Clone the repo
-   ```sh
-   git clone https://github.com/yahav876/gitops-terraform-k8s-helm.git
-   ```
-2. Configure kubectl with aws:
-    ```sh
-    aws eks update-kubeconfig --region region-code --name cluster-name
-    ```
-3. Configure "Secrets" 
+1. Fork the repo 
+
+2. Configure "Secrets" 
    ```sh
     AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY
     KUBE_CONFIG_DATA (cat $HOME/.kube/config | base64)
-    TF_API_TOKEN
    ```
+3. Open terraform cloud account, create TF_API_TOKEN-        https://app.terraform.io/app/settings/tokens 
+
+
+    Create environment variables of aws:
+      
+      AWS_ACCESS_KEY_ID
+      
+      AWS_SECRET_ACCESS_KEY
+
+    Add Secret "TF_API_TOKEN" in your github repo settings.
+   
+4. 
+   Make a commit and push it , A github actions pipeline should now apply your Infrastructure
+
+5. Configure kubectl with aws:
+    ```sh
+    aws eks update-kubeconfig --region region-code --name cluster-name
+    ```
 4. After helm deployment test UI of Grafana/Prometheus/     Alertmanager
     ```sh
     kubectl port-forward deployment/monitoring-grafana 3000
@@ -110,7 +121,7 @@ This is an example of how to list things you need to use the software and how to
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Just make a "push" and your EKS cluster with Prometheus monitoring helm chart will be deployed to your aws account.
+Every change you wish to make should be in eks/env/variables.tfvars file just change the values as you want. 
 
 
 <p align="right">(<a href="#top">back to top</a>)</p>
