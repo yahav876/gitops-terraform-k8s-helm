@@ -128,6 +128,3 @@ Every change you wish to make should be in eks/env/variables.tfvars file just ch
 
 
 
-
-
-
